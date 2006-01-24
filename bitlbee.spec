@@ -55,7 +55,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc COPYING doc/AUTHORS doc/CHANGES doc/CREDITS doc/README
+%doc doc/{AUTHORS,CHANGES,CREDITS,FAQ,README}
 %doc %{_mandir}/man?/*
 %attr(755,root,root) %{_sbindir}/*
 %{_datadir}/bitlbee
