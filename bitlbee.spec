@@ -1,5 +1,5 @@
 Summary:	An IRC to other chat networks gateway
-Summary(pl):	Bramka pomiêdzy IRC-em i innymi sieciami komunikacyjnymi
+Summary(pl.UTF-8):   Bramka pomiÄ™dzy IRC-em i innymi sieciami komunikacyjnymi
 Name:		bitlbee
 Version:	1.0.2
 Release:	1
@@ -16,10 +16,10 @@ An IRC to other chat networks gateway. This program can be used as an
 IRC server which forwards everything you say to people on other chat
 networks like MSN/ICQ/Jabber.
 
-%description -l pl
-Bramka pomiêdzy IRC-em i innymi sieciami komunikacyjnymi. Ten program
-mo¿e byæ u¿ywany jako serwer IRC przekazuj±cy wszystko co siê mówi do
-ludzi korzystaj±cych z innych sieci komunikacyjnych, takich jak
+%description -l pl.UTF-8
+Bramka pomiÄ™dzy IRC-em i innymi sieciami komunikacyjnymi. Ten program
+moÅ¼e byÄ‡ uÅ¼ywany jako serwer IRC przekazujÄ…cy wszystko co siÄ™ mÃ³wi do
+ludzi korzystajÄ…cych z innych sieci komunikacyjnych, takich jak
 MSN/ICQ/Jabber.
 
 %prep
