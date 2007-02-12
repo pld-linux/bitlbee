@@ -1,5 +1,5 @@
 Summary:	An IRC to other chat networks gateway
-Summary(pl.UTF-8):   Bramka pomiędzy IRC-em i innymi sieciami komunikacyjnymi
+Summary(pl.UTF-8):	Bramka pomiędzy IRC-em i innymi sieciami komunikacyjnymi
 Name:		bitlbee
 Version:	1.0.2
 Release:	1
