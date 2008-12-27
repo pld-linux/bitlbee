@@ -31,7 +31,8 @@ MSN/ICQ/Jabber.
 	--etcdir=%{_sysconfdir} \
 	--prefix=%{_prefix} \
 	--ssl=gnutls
-%{__make} %{?_smp_mflags}
+
+%{__make}
 ### FIXME: Documentation needs old sgmltools tool, deprecated.
 #%{__make} -C doc
 
@@ -56,7 +57,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc doc/{AUTHORS,CHANGES,CREDITS,FAQ,README}
-%doc %{_mandir}/man?/*
+%{_mandir}/man?/*
 %attr(755,root,root) %{_sbindir}/*
 %{_datadir}/bitlbee
 %attr(700,root,root) %{_localstatedir}/lib/bitlbee
