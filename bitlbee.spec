@@ -1,12 +1,12 @@
 Summary:	An IRC to other chat networks gateway
 Summary(pl.UTF-8):	Bramka pomiędzy IRC-em i innymi sieciami komunikacyjnymi
 Name:		bitlbee
-Version:	1.0.2
+Version:	1.2.3
 Release:	1
 License:	GPL
 Group:		Daemons
 Source0:	http://get.bitlbee.org/src/%{name}-%{version}.tar.gz
-# Source0-md5:	ead4433fca9444cb61d478f1af2a79dd
+# Source0-md5:	2b1674d98804970809de3da3edf0bed2
 URL:		http://www.bitlbee.org/
 BuildRequires:	gnutls-devel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
