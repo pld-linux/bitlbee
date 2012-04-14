@@ -9,7 +9,7 @@ Summary:	An IRC to other chat networks gateway
 Summary(pl.UTF-8):	Bramka pomiędzy IRC-em i innymi sieciami komunikacyjnymi
 Name:		bitlbee
 Version:	3.0.5
-Release:	0.1
+Release:	0.2
 License:	GPL v2+ and MIT
 Group:		Daemons
 Source0:	http://get.bitlbee.org/src/%{name}-%{version}.tar.gz
@@ -82,12 +82,8 @@ CFLAGS="%{rpmcflags}" \
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_localstatedir}/lib/%{name}
-
 %{__make} install install-dev install-etc install-systemd \
 	DESTDIR=$RPM_BUILD_ROOT
-
-# Install some files manually to their correct destination
-#install -d $RPM_BUILD_ROOT{%{_localstatedir}/lib,%{_libdir}}/%{name}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -95,6 +91,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc doc/{AUTHORS,CHANGES,CREDITS,FAQ,README}
+%dir %{_sysconfdir}/%{name}
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/bitlbee.conf
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/motd.txt
 %attr(755,root,root) %{_sbindir}/bitlbee
