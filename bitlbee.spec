@@ -9,12 +9,13 @@ Summary:	An IRC to other chat networks gateway
 Summary(pl.UTF-8):	Bramka pomiędzy IRC-em i innymi sieciami komunikacyjnymi
 Name:		bitlbee
 Version:	3.0.5
-Release:	0.2
+Release:	0.6
 License:	GPL v2+ and MIT
 Group:		Daemons
 Source0:	http://get.bitlbee.org/src/%{name}-%{version}.tar.gz
 # Source0-md5:	9ff97260a2a7f3a7d102db158a8d9887
 URL:		http://www.bitlbee.org/
+BuildRequires:	asciidoc
 BuildRequires:	gnutls-devel
 %{?with_otr:BuildRequires:	libotr-devel >= 3.2.0}
 BuildRequires:	systemd-units
@@ -50,11 +51,26 @@ Requires:	%{name} = %{version}-%{release}
 The bitlbee-otr package includes OTR plugin for bitlbee. Not
 completely stable and not 100% foolproof so use at your own risk.
 
+%package protocol-skype
+Summary:	Skype protocol support for bitlbee
+Group:		Daemons
+Requires:	%{name} = %{version}-%{release}
+Requires:	python-skype
+
+%description protocol-skype
+Skype protocol support for bitlbee.
+
 %prep
 %setup -q
 
 # fix wrong assumption with $DESTDIR
 %{__sed} -i -e 's,$(shell id -u),0,' Makefile
+
+# fix #!%{_bindir}/env python -> #!%{__python}:
+%{__sed} -i -e '1s,^#!.*python.*,#!%{__python},' protocols/skype/*.py
+
+# fix config path
+%{__sed} -i -e 's,/usr/local/etc/skyped,%{_sysconfdir}/skyped,' protocols/skype/*.py
 
 %build
 CFLAGS="%{rpmcflags}" \
@@ -73,11 +89,9 @@ CFLAGS="%{rpmcflags}" \
 %if %{with otr}
 	--otr=plugin \
 %endif
+	--skype=plugin \
 
 %{__make}
-
-### FIXME: Documentation needs old sgmltools tool, deprecated.
-#%{__make} -C doc
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -98,6 +112,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man5/bitlbee.conf.5*
 %{_mandir}/man8/bitlbee.8*
 %{_datadir}/bitlbee
+%dir %{_libdir}/%{name}
 %attr(700,root,root) %{_localstatedir}/lib/bitlbee
 %{systemdunitdir}/bitlbee.service
 %{systemdunitdir}/bitlbee.socket
@@ -114,3 +129,13 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/%{name}/otr.so
 %endif
+
+%files protocol-skype
+%defattr(644,root,root,755)
+%doc protocols/skype/{HACKING,NEWS,README,skyped.txt}
+%dir %{_sysconfdir}/skyped
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/skyped/skyped.cnf
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/skyped/skyped.conf
+%attr(755,root,root) %{_libdir}/%{name}/skype.so
+%attr(755,root,root) %{_sbindir}/skyped
+%{_mandir}/man1/skyped.1*
