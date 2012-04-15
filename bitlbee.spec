@@ -1,6 +1,5 @@
 # TODO
 # - sync pl
-# - bilbee user
 #
 # Conditional build:
 %bcond_without	otr		# build without OTR
@@ -9,16 +8,26 @@ Summary:	An IRC to other chat networks gateway
 Summary(pl.UTF-8):	Bramka pomiędzy IRC-em i innymi sieciami komunikacyjnymi
 Name:		bitlbee
 Version:	3.0.5
-Release:	0.6
+Release:	0.8
 License:	GPL v2+ and MIT
 Group:		Daemons
 Source0:	http://get.bitlbee.org/src/%{name}-%{version}.tar.gz
 # Source0-md5:	9ff97260a2a7f3a7d102db158a8d9887
 URL:		http://www.bitlbee.org/
+Patch0:		config.patch
 BuildRequires:	asciidoc
 BuildRequires:	gnutls-devel
 %{?with_otr:BuildRequires:	libotr-devel >= 3.2.0}
+BuildRequires:	rpmbuild(macros) >= 1.461
 BuildRequires:	systemd-units
+Requires(postun):	/usr/sbin/groupdel
+Requires(postun):	/usr/sbin/userdel
+Requires(pre):	/bin/id
+Requires(pre):	/usr/bin/getgid
+Requires(pre):	/usr/sbin/groupadd
+Requires(pre):	/usr/sbin/useradd
+Provides:	group(bitlbee)
+Provides:	user(bitlbee)
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -62,6 +71,7 @@ Skype protocol support for bitlbee.
 
 %prep
 %setup -q
+%patch0 -p1
 
 # fix wrong assumption with $DESTDIR
 %{__sed} -i -e 's,$(shell id -u),0,' Makefile
@@ -102,18 +112,28 @@ install -d $RPM_BUILD_ROOT%{_localstatedir}/lib/%{name}
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+%pre
+%groupadd -g 280 bitlbee
+%useradd -u 280 -d /var/lib/bitlbee -g bitlbee -c "Bitlbee User" bitlbee
+
+%postun
+if [ "$1" = "0" ]; then
+	%userremove bitlbee
+	%groupremove bitlbee
+fi
+
 %files
 %defattr(644,root,root,755)
 %doc doc/{AUTHORS,CHANGES,CREDITS,FAQ,README}
-%dir %{_sysconfdir}/%{name}
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/bitlbee.conf
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/motd.txt
+%dir %attr(750,root,bitlbee) %{_sysconfdir}/%{name}
+%attr(640,root,bitlbee) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/bitlbee.conf
+%attr(640,root,bitlbee) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/motd.txt
 %attr(755,root,root) %{_sbindir}/bitlbee
 %{_mandir}/man5/bitlbee.conf.5*
 %{_mandir}/man8/bitlbee.8*
 %{_datadir}/bitlbee
 %dir %{_libdir}/%{name}
-%attr(700,root,root) %{_localstatedir}/lib/bitlbee
+%attr(770,root,bitlbee) %{_localstatedir}/lib/bitlbee
 %{systemdunitdir}/bitlbee.service
 %{systemdunitdir}/bitlbee.socket
 %{systemdunitdir}/bitlbee@.service
@@ -133,9 +153,9 @@ rm -rf $RPM_BUILD_ROOT
 %files protocol-skype
 %defattr(644,root,root,755)
 %doc protocols/skype/{HACKING,NEWS,README,skyped.txt}
-%dir %{_sysconfdir}/skyped
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/skyped/skyped.cnf
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/skyped/skyped.conf
+%dir %attr(750,root,bitlbee) %{_sysconfdir}/skyped
+%attr(640,root,bitlbee) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/skyped/skyped.cnf
+%attr(640,root,bitlbee) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/skyped/skyped.conf
 %attr(755,root,root) %{_libdir}/%{name}/skype.so
 %attr(755,root,root) %{_sbindir}/skyped
 %{_mandir}/man1/skyped.1*
