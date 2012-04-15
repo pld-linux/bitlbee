@@ -1,5 +1,3 @@
-Index: bitlbee-3.0.3/init/bitlbee.service.in
-===================================================================
 --- bitlbee-3.0.3.orig/init/bitlbee.service.in
 +++ bitlbee-3.0.3/init/bitlbee.service.in
 @@ -3,7 +3,9 @@ Description=BitlBee IRC/IM gateway
@@ -13,3 +11,13 @@ Index: bitlbee-3.0.3/init/bitlbee.service.in
  
  [Install]
  WantedBy=multi-user.target
+--- bitlbee-3.0.5/init/bitlbee@.service.in~	2012-02-18 12:55:09.000000000 +0200
++++ bitlbee-3.0.5/init/bitlbee@.service.in	2012-04-15 11:44:51.390614993 +0300
+@@ -3,6 +3,6 @@
+ After=syslog.target
+ 
+ [Service]
+-ExecStart=@sbindir@/bitlbee -I
++ExecStart=@sbindir@bitlbee -I
+ StandardInput=socket
+ User=bitlbee
