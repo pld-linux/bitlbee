@@ -9,7 +9,7 @@ Summary:	An IRC to other chat networks gateway
 Summary(pl.UTF-8):	Bramka pomiędzy IRC-em i innymi sieciami komunikacyjnymi
 Name:		bitlbee
 Version:	3.0.5
-Release:	0.13
+Release:	0.16
 License:	GPL v2+ and MIT
 Group:		Daemons
 Source0:	http://get.bitlbee.org/src/%{name}-%{version}.tar.gz
@@ -17,6 +17,7 @@ Source0:	http://get.bitlbee.org/src/%{name}-%{version}.tar.gz
 URL:		http://www.bitlbee.org/
 Patch0:		config.patch
 Patch1:		systemd.patch
+Patch2:		skyped-FD_CLOEXEC.patch
 BuildRequires:	asciidoc
 BuildRequires:	gnutls-devel
 %{?with_otr:BuildRequires:	libotr-devel >= 3.2.0}
@@ -29,9 +30,9 @@ Requires(pre):	/bin/id
 Requires(pre):	/usr/bin/getgid
 Requires(pre):	/usr/sbin/groupadd
 Requires(pre):	/usr/sbin/useradd
+Requires:	systemd-units >= 37-0.10
 Provides:	group(bitlbee)
 Provides:	user(bitlbee)
-Requires:	systemd-units >= 37-0.10
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -77,6 +78,7 @@ Skype protocol support for bitlbee.
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 # fix wrong assumption with $DESTDIR
 %{__sed} -i -e 's,$(shell id -u),0,' Makefile
