@@ -3,12 +3,13 @@
 #
 # Conditional build:
 %bcond_without	otr		# build without OTR
+%bcond_with		purple	# build with libpurple (not recommended for public servers). http://wiki.bitlbee.org/HowtoPurple
 
 Summary:	An IRC to other chat networks gateway
 Summary(pl.UTF-8):	Bramka pomiędzy IRC-em i innymi sieciami komunikacyjnymi
 Name:		bitlbee
 Version:	3.0.5
-Release:	0.10
+Release:	0.13
 License:	GPL v2+ and MIT
 Group:		Daemons
 Source0:	http://get.bitlbee.org/src/%{name}-%{version}.tar.gz
@@ -19,6 +20,7 @@ Patch1:		systemd.patch
 BuildRequires:	asciidoc
 BuildRequires:	gnutls-devel
 %{?with_otr:BuildRequires:	libotr-devel >= 3.2.0}
+%{?with_purple:BuildRequires:	libpurple-devel}
 BuildRequires:	rpmbuild(macros) >= 1.461
 BuildRequires:	systemd-units
 Requires(postun):	/usr/sbin/groupdel
@@ -99,6 +101,9 @@ CFLAGS="%{rpmcflags}" \
 	--strip=0 \
 	--plugins=1 \
 	--ssl=gnutls \
+%if %{with purple}
+	--purple=1 \
+%endif
 %if %{with otr}
 	--otr=plugin \
 %endif
@@ -132,7 +137,7 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc doc/{AUTHORS,CHANGES,CREDITS,FAQ,README}
+%doc doc/{AUTHORS,CHANGES,CREDITS,FAQ,README} utils
 %dir %attr(750,root,bitlbee) %{_sysconfdir}/%{name}
 %attr(640,root,bitlbee) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/bitlbee.conf
 %attr(640,root,bitlbee) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/%{name}/motd.txt
