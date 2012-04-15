@@ -8,13 +8,14 @@ Summary:	An IRC to other chat networks gateway
 Summary(pl.UTF-8):	Bramka pomiędzy IRC-em i innymi sieciami komunikacyjnymi
 Name:		bitlbee
 Version:	3.0.5
-Release:	0.8
+Release:	0.10
 License:	GPL v2+ and MIT
 Group:		Daemons
 Source0:	http://get.bitlbee.org/src/%{name}-%{version}.tar.gz
 # Source0-md5:	9ff97260a2a7f3a7d102db158a8d9887
 URL:		http://www.bitlbee.org/
 Patch0:		config.patch
+Patch1:		systemd.patch
 BuildRequires:	asciidoc
 BuildRequires:	gnutls-devel
 %{?with_otr:BuildRequires:	libotr-devel >= 3.2.0}
@@ -28,6 +29,7 @@ Requires(pre):	/usr/sbin/groupadd
 Requires(pre):	/usr/sbin/useradd
 Provides:	group(bitlbee)
 Provides:	user(bitlbee)
+Requires:	systemd-units >= 37-0.10
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -72,6 +74,7 @@ Skype protocol support for bitlbee.
 %prep
 %setup -q
 %patch0 -p1
+%patch1 -p1
 
 # fix wrong assumption with $DESTDIR
 %{__sed} -i -e 's,$(shell id -u),0,' Makefile
@@ -115,12 +118,17 @@ rm -rf $RPM_BUILD_ROOT
 %pre
 %groupadd -g 280 bitlbee
 %useradd -u 280 -d /var/lib/bitlbee -g bitlbee -c "Bitlbee User" bitlbee
+%systemd_post bitlbee.service
+
+%preun
+%systemd_preun bitlbee.service
 
 %postun
 if [ "$1" = "0" ]; then
 	%userremove bitlbee
 	%groupremove bitlbee
 fi
+%systemd_reload
 
 %files
 %defattr(644,root,root,755)
