@@ -30,7 +30,8 @@ Requires(pre):	/bin/id
 Requires(pre):	/usr/bin/getgid
 Requires(pre):	/usr/sbin/groupadd
 Requires(pre):	/usr/sbin/useradd
-Requires:	systemd-units >= 37-0.10
+Requires(post,preun,postun):	systemd-units >= 38
+Requires:	systemd-units >= 38
 Provides:	group(bitlbee)
 Provides:	user(bitlbee)
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
