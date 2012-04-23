@@ -1,0 +1,16 @@
+Do not download custom groups, makes skyped to lag because those queries timeout
+
+http://bugs.bitlbee.org/bitlbee/ticket/946
+
+--- bitlbee-3.0.5/protocols/skype/skype.c~	2012-02-18 12:55:09.000000000 +0200
++++ bitlbee-3.0.5/protocols/skype/skype.c	2012-04-15 15:12:57.245107505 +0300
+@@ -1170,8 +1170,7 @@
+ 	skype_printf(ic, "PASSWORD %s\n", ic->acc->pass);
+ 
+ 	/* This will download all buddies and groups. */
+-	st = skype_printf(ic, "SEARCH GROUPS CUSTOM\n");
+-	skype_printf(ic, "SEARCH FRIENDS\n");
++	st = skype_printf(ic, "SEARCH FRIENDS\n");
+ 
+ 	skype_printf(ic, "SET USERSTATUS ONLINE\n");
+ 
