@@ -9,7 +9,7 @@ Summary:	An IRC to other chat networks gateway
 Summary(pl.UTF-8):	Bramka pomiędzy IRC-em i innymi sieciami komunikacyjnymi
 Name:		bitlbee
 Version:	3.0.5
-Release:	1
+Release:	2
 License:	GPL v2+ and MIT
 Group:		Daemons
 Source0:	http://get.bitlbee.org/src/%{name}-%{version}.tar.gz
@@ -71,10 +71,23 @@ completely stable and not 100% foolproof so use at your own risk.
 Summary:	Skype protocol support for bitlbee
 Group:		Daemons
 Requires:	%{name} = %{version}-%{release}
-Requires:	python-skype
+Suggests:	skyped
 
 %description protocol-skype
 Skype protocol support for bitlbee.
+
+%package -n skyped
+Summary:	Remote control of the Skype GUI client
+Group:		Daemons
+Requires:	python-skype
+
+%description -n skyped
+Skype supports remote control of the GUI client only via X11 or DBus
+messages. This is hard in care you want remote control. This daemon
+listens on a TCP port and runs on the same machine where the GUI
+client runs. It passes all the input it gets to Skype directly, except
+for a few commands which is related to authentication. The whole
+communication is done via SSL.
 
 %prep
 %setup -q
@@ -170,10 +183,14 @@ fi
 
 %files protocol-skype
 %defattr(644,root,root,755)
-%doc protocols/skype/{HACKING,NEWS,README,skyped.txt}
-%dir %attr(750,root,bitlbee) %{_sysconfdir}/skyped
-%attr(640,root,bitlbee) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/skyped/skyped.cnf
-%attr(640,root,bitlbee) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/skyped/skyped.conf
+%doc protocols/skype/{HACKING,NEWS,README}
 %attr(755,root,root) %{_libdir}/%{name}/skype.so
+
+%files -n skyped
+%defattr(644,root,root,755)
+%doc protocols/skype/{skyped.txt,client.sh}
+%dir %{_sysconfdir}/skyped
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/skyped/skyped.cnf
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/skyped/skyped.conf
 %attr(755,root,root) %{_sbindir}/skyped
 %{_mandir}/man1/skyped.1*
