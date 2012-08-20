@@ -1,0 +1,60 @@
+--- bitlbee-3.0.5/protocols/skype/skyped.py~	2012-08-20 13:12:13.498690222 +0300
++++ bitlbee-3.0.5/protocols/skype/skyped.py	2012-08-20 13:45:21.105984684 +0300
+@@ -275,8 +275,12 @@
+ 		sock.close()
+ 
+ class SkypeApi:
+-	def __init__(self):
+-		self.skype = Skype4Py.Skype()
++	def __init__(self, transport = None):
++		if transport:
++			self.skype = Skype4Py.Skype(Transport = transport)
++		else:
++			self.skype = Skype4Py.Skype()
++
+ 		self.skype.OnNotify = self.recv
+ 		self.skype.Client.Start()
+ 
+@@ -352,6 +356,7 @@
+ 		self.host = "0.0.0.0"
+ 		self.log = None
+ 		self.port = None
++		self.transport = None
+ 		self.version = False
+ 		# well, this is a bit hackish. we store the socket of the last connected client
+ 		# here and notify it. maybe later notify all connected clients?
+@@ -373,6 +378,7 @@
+ 	-l      --log           set the log file in background mode (default: none)
+ 	-n	--nofork	don't run as daemon in the background
+ 	-p	--port		set the tcp port (default: %s)
++	-t	--transport	enforce Skype4Py transport (x11 or dbus) (defaults to Skype4Py default)
+ 	-v	--version	display version information""" % (self.cfgpath, self.host, self.port)
+ 		sys.exit(ret)
+ 
+@@ -420,7 +426,7 @@
+ if __name__=='__main__':
+ 	options = Options()
+ 	try:
+-		opts, args = getopt.getopt(sys.argv[1:], "c:dhH:l:np:v", ["config=", "debug", "help", "host=", "log=", "nofork", "port=", "version"])
++		opts, args = getopt.getopt(sys.argv[1:], "c:dhH:l:np:t:v", ["config=", "debug", "help", "host=", "log=", "nofork", "port=", "transport=", "version"])
+ 	except getopt.GetoptError:
+ 		options.usage(1)
+ 	for opt, arg in opts:
+@@ -438,6 +444,8 @@
+ 			options.daemon = False
+ 		elif opt in ("-p", "--port"):
+ 			options.port = int(arg)
++		elif opt in ("-t", "--transport"):
++			options.transport = arg
+ 		elif opt in ("-v", "--version"):
+ 			options.version = True
+ 	if options.help:
+@@ -484,7 +492,7 @@
+ 	if hasgobject:
+ 		server(options.host, options.port)
+ 	try:
+-		skype = SkypeApi()
++		skype = SkypeApi(options.transport)
+ 	except Skype4Py.SkypeAPIError, s:
+ 		sys.exit("%s. Are you sure you have started Skype?" % s)
+ 	if hasgobject:
