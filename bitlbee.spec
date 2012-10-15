@@ -8,19 +8,19 @@
 Summary:	An IRC to other chat networks gateway
 Summary(pl.UTF-8):	Bramka pomiędzy IRC-em i innymi sieciami komunikacyjnymi
 Name:		bitlbee
-Version:	3.0.5
-Release:	2
+Version:	3.0.6
+Release:	1
 License:	GPL v2+ and MIT
 Group:		Daemons
 Source0:	http://get.bitlbee.org/src/%{name}-%{version}.tar.gz
-# Source0-md5:	9ff97260a2a7f3a7d102db158a8d9887
+# Source0-md5:	0ab9c9159bd9bac9210fdb5d2f66448a
 URL:		http://www.bitlbee.org/
 Patch0:		config.patch
 Patch1:		systemd.patch
-Patch2:		skyped-FD_CLOEXEC.patch
 Patch3:		skype-no-groups.patch
 Patch4:		skyped-transport.patch
 BuildRequires:	asciidoc
+BuildRequires:	glib2-devel >= 1:2.14
 BuildRequires:	gnutls-devel
 %{?with_otr:BuildRequires:	libotr-devel >= 3.2.0}
 %{?with_purple:BuildRequires:	libpurple-devel}
@@ -94,7 +94,6 @@ communication is done via SSL.
 %setup -q
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
 %patch3 -p1
 %patch4 -p1
 
@@ -121,6 +120,7 @@ CFLAGS="%{rpmcflags}" \
 	--strip=0 \
 	--plugins=1 \
 	--ssl=gnutls \
+	--pie=1 \
 %if %{with purple}
 	--purple=1 \
 %endif
