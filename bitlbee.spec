@@ -2,18 +2,18 @@
 # - sync pl
 #
 # Conditional build:
-%bcond_without	otr		# build without OTR
+%bcond_with		otr		# build without OTR
 %bcond_with		purple	# build with libpurple (not recommended for public servers). http://wiki.bitlbee.org/HowtoPurple
 
 Summary:	An IRC to other chat networks gateway
 Summary(pl.UTF-8):	Bramka pomiędzy IRC-em i innymi sieciami komunikacyjnymi
 Name:		bitlbee
-Version:	3.0.6
+Version:	3.2
 Release:	1
 License:	GPL v2+ and MIT
 Group:		Daemons
 Source0:	http://get.bitlbee.org/src/%{name}-%{version}.tar.gz
-# Source0-md5:	0ab9c9159bd9bac9210fdb5d2f66448a
+# Source0-md5:	6a8fe98e96a47c636004a245075d5d7c
 URL:		http://www.bitlbee.org/
 Patch0:		config.patch
 Patch1:		systemd.patch
