@@ -8,17 +8,14 @@
 Summary:	An IRC to other chat networks gateway
 Summary(pl.UTF-8):	Bramka pomiędzy IRC-em i innymi sieciami komunikacyjnymi
 Name:		bitlbee
-Version:	3.2
-Release:	3
+Version:	3.5.1
+Release:	1
 License:	GPL v2+ and MIT
 Group:		Daemons
 Source0:	http://get.bitlbee.org/src/%{name}-%{version}.tar.gz
-# Source0-md5:	6a8fe98e96a47c636004a245075d5d7c
+# Source0-md5:	ec866f937258c16e1e2e70f3dec67430
 URL:		http://www.bitlbee.org/
 Patch0:		config.patch
-Patch1:		systemd.patch
-Patch3:		skype-no-groups.patch
-Patch4:		skyped-transport.patch
 BuildRequires:	asciidoc
 BuildRequires:	glib2-devel >= 1:2.14
 BuildRequires:	gnutls-devel
@@ -68,43 +65,12 @@ Requires:	%{name} = %{version}-%{release}
 The bitlbee-otr package includes OTR plugin for bitlbee. Not
 completely stable and not 100% foolproof so use at your own risk.
 
-%package protocol-skype
-Summary:	Skype protocol support for bitlbee
-Group:		Daemons
-Requires:	%{name} = %{version}-%{release}
-Suggests:	skyped
-
-%description protocol-skype
-Skype protocol support for bitlbee.
-
-%package -n skyped
-Summary:	Remote control of the Skype GUI client
-Group:		Daemons
-Requires:	python-skype
-
-%description -n skyped
-Skype supports remote control of the GUI client only via X11 or DBus
-messages. This is hard in care you want remote control. This daemon
-listens on a TCP port and runs on the same machine where the GUI
-client runs. It passes all the input it gets to Skype directly, except
-for a few commands which is related to authentication. The whole
-communication is done via SSL.
-
 %prep
 %setup -q
 %patch0 -p1
-%patch1 -p1
-%patch3 -p1
-%patch4 -p1
 
 # fix wrong assumption with $DESTDIR
 %{__sed} -i -e 's,$(shell id -u),0,' Makefile
-
-# fix #!%{_bindir}/env python -> #!%{__python}:
-%{__sed} -i -e '1s,^#!.*python.*,#!%{__python},' protocols/skype/*.py
-
-# fix config path
-%{__sed} -i -e 's,/usr/local/etc/skyped,%{_sysconfdir}/skyped,' protocols/skype/*.py
 
 %build
 CFLAGS="%{rpmcflags}" \
@@ -127,7 +93,7 @@ CFLAGS="%{rpmcflags}" \
 %if %{with otr}
 	--otr=plugin \
 %endif
-	--skype=plugin \
+	--skype=0
 
 %{__make}
 
@@ -165,7 +131,6 @@ fi
 %{_mandir}/man5/bitlbee.conf.5*
 %{_mandir}/man8/bitlbee.8*
 %{_datadir}/bitlbee
-%dir %{_libdir}/%{name}
 %attr(770,root,bitlbee) %{_localstatedir}/lib/bitlbee
 %{systemdunitdir}/bitlbee.service
 %{systemdunitdir}/bitlbee.socket
@@ -182,17 +147,3 @@ fi
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/%{name}/otr.so
 %endif
-
-%files protocol-skype
-%defattr(644,root,root,755)
-%doc protocols/skype/{HACKING,NEWS,README}
-%attr(755,root,root) %{_libdir}/%{name}/skype.so
-
-%files -n skyped
-%defattr(644,root,root,755)
-%doc protocols/skype/{skyped.txt,client.sh}
-%dir %{_sysconfdir}/skyped
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/skyped/skyped.cnf
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/skyped/skyped.conf
-%attr(755,root,root) %{_sbindir}/skyped
-%{_mandir}/man1/skyped.1*
