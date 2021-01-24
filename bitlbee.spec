@@ -8,16 +8,16 @@
 Summary:	An IRC to other chat networks gateway
 Summary(pl.UTF-8):	Bramka pomiędzy IRC-em i innymi sieciami komunikacyjnymi
 Name:		bitlbee
-Version:	3.5.1
+Version:	3.6
 Release:	1
 License:	GPL v2+ and MIT
 Group:		Daemons
 Source0:	http://get.bitlbee.org/src/%{name}-%{version}.tar.gz
-# Source0-md5:	ec866f937258c16e1e2e70f3dec67430
+# Source0-md5:	a11c5d18848b1533e1a1aaa516ea4388
 URL:		http://www.bitlbee.org/
 Patch0:		config.patch
 BuildRequires:	asciidoc
-BuildRequires:	glib2-devel >= 1:2.14
+BuildRequires:	glib2-devel >= 1:2.32
 BuildRequires:	gnutls-devel
 %{?with_otr:BuildRequires:	libotr-devel >= 3.2.0}
 %{?with_purple:BuildRequires:	libpurple-devel}
@@ -30,6 +30,7 @@ Requires(pre):	/usr/bin/getgid
 Requires(pre):	/usr/sbin/groupadd
 Requires(pre):	/usr/sbin/useradd
 Requires(post,preun,postun):	systemd-units >= 38
+Requires:	glib2 >= 1:2.32
 Requires:	systemd-units >= 38
 Provides:	group(bitlbee)
 Provides:	user(bitlbee)
