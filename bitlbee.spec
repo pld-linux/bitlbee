@@ -68,7 +68,7 @@ completely stable and not 100% foolproof so use at your own risk.
 
 %prep
 %setup -q
-%patch0 -p1
+%patch -P0 -p1
 
 # fix wrong assumption with $DESTDIR
 %{__sed} -i -e 's,$(shell id -u),0,' Makefile
